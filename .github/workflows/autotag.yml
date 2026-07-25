@@ -1,0 +1,57 @@
+name: autotag
+
+# Auto-bump the minor version on every push to main. The major is pinned at 0;
+# the minor is the running release counter. poetry-dynamic-versioning reads the
+# resulting v0.N tag at build time, so the version never needs a manual edit.
+# A tag push does not re-trigger this workflow (branch filter), so no recursion.
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: autotag
+  cancel-in-progress: false
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Compute and push next v0.N tag
+        run: |
+          set -euo pipefail
+          git fetch --tags --quiet
+          if git describe --exact-match --tags HEAD >/dev/null 2>&1; then
+            echo "HEAD already tagged ($(git describe --exact-match --tags HEAD)); skipping."
+            exit 0
+          fi
+          latest="$(git tag --list 'v0.*' --sort=-v:refname | head -1)"
+          if [ -z "$latest" ]; then
+            next="v0.1"
+          else
+            minor="${latest#v0.}"
+            next="v0.$((minor + 1))"
+          fi
+          echo "Latest tag: ${latest:-<none>} -> new tag: $next"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "$next" -m "Release $next"
+          git push origin "$next"
+          echo "TAG=$next" >>"$GITHUB_ENV"
+
+      - name: Create GitHub Release
+        if: env.TAG != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh release create "$TAG" \
+            --title "$TAG" \
+            --generate-notes

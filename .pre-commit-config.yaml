@@ -1,0 +1,25 @@
+# Mandatory local checks. Install once with:
+#   pip install pre-commit
+#   pre-commit install --hook-type pre-commit --hook-type commit-msg --hook-type pre-push
+# The default_install_hook_types below makes a bare `pre-commit install` wire up
+# the commit-msg and pre-push stages as well.
+minimum_pre_commit_version: "3.5.0"
+default_install_hook_types: [pre-commit, commit-msg, pre-push]
+
+repos:
+  # Conventional Commits lint on the commit message (English history).
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.4.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+
+  # Full quality gate. poe ci is too slow for every commit, so it runs on push.
+  - repo: local
+    hooks:
+      - id: poe-ci
+        name: poe ci
+        entry: poetry run poe ci
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
