@@ -40,7 +40,7 @@ enable = true
 vcs = "git"
 style = "pep440"
 # Two-component tags v0.N (major pinned at 0, minor auto-bumped by CI on each
-# merge to main). Dunamai's default pattern expects vX.Y.Z, so match vX.Y here.
+# merge to master). Dunamai's default pattern expects vX.Y.Z, so match vX.Y here.
 pattern = "(?x)^v(?P<base>\\d+\\.\\d+)"
 
 [tool.ruff]

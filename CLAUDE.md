@@ -31,7 +31,7 @@ the SDK-coupling hub), `sdk.py` (`stmtool sdk` cache backend), `config.py`
 
 ## Versioning
 
-`0.N`: major pinned at `0`, minor auto-bumped by CI on every merge to `main`
+`0.N`: major pinned at `0`, minor auto-bumped by CI on every merge to `master`
 (`.github/workflows/autotag.yml` pushes the next `v0.N` tag;
 `poetry-dynamic-versioning` reads it). **No hand-edited version constant** —
 `__version__` comes from `importlib.metadata`. Do not add a static version or
@@ -51,7 +51,7 @@ exception types (no bare `except`). Do **not** write code comments unless asked.
 - `poetry run poe fix` runs the auto-fixers (ruff, isort, black, ruff format);
   results must still pass `poe ci`.
 - Commit messages are English **Conventional Commits**. Pull requests target
-  `main`.
+  `master`.
 
 ## Docs to keep in sync
 

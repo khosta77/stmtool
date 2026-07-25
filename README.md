@@ -1,6 +1,6 @@
 # stmtool
 
-[![CI](https://github.com/khosta77/stmtool/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/khosta77/stmtool/actions/workflows/ci.yml)
+[![CI](https://github.com/khosta77/stmtool/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/khosta77/stmtool/actions/workflows/ci.yml)
 
 `stmtool` is the command-line companion for the
 [stm32-sdk](https://github.com/khosta77/stm32-sdk) bare-metal C++20 SDK. It
@@ -83,7 +83,7 @@ When a command needs the SDK root, `stmtool` looks in this order:
 ## Versioning
 
 The version is `0.N`: the major is pinned at `0`, the minor is a running release
-counter bumped automatically by CI on every merge to `main` (an `autotag`
+counter bumped automatically by CI on every merge to `master` (an `autotag`
 workflow pushes the next `v0.N` tag; `poetry-dynamic-versioning` reads it at
 build time). There is no hand-edited version constant — `stmtool version`
 reports whatever the installed distribution metadata says.
@@ -98,7 +98,7 @@ poetry run poe fix    # auto-fixers
 
 Commits follow Conventional Commits (English). See
 [CONTRIBUTING is folded into CLAUDE.md / AGENTS.md]. Changes are opened as pull
-requests against `main`.
+requests against `master`.
 
 ## License
 

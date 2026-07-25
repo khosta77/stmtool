@@ -1,13 +1,13 @@
 name: autotag
 
-# Auto-bump the minor version on every push to main. The major is pinned at 0;
+# Auto-bump the minor version on every push to master. The major is pinned at 0;
 # the minor is the running release counter. poetry-dynamic-versioning reads the
 # resulting v0.N tag at build time, so the version never needs a manual edit.
 # A tag push does not re-trigger this workflow (branch filter), so no recursion.
 
 on:
   push:
-    branches: [main]
+    branches: [master]
 
 permissions:
   contents: write
