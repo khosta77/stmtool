@@ -3,9 +3,9 @@ name = "stmtool"
 version = "0.0.0"
 description = "CLI tool for STM32-SDK bare-metal projects"
 authors = ["khosta77"]
-readme = "../../README.md"
+readme = "README.md"
 license = "MIT"
-packages = [{ include = "stmtool" }]
+packages = [{ include = "stmtool", from = "src" }]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -39,6 +39,9 @@ build-backend = "poetry_dynamic_versioning.backend"
 enable = true
 vcs = "git"
 style = "pep440"
+# Two-component tags v0.N (major pinned at 0, minor auto-bumped by CI on each
+# merge to main). Dunamai's default pattern expects vX.Y.Z, so match vX.Y here.
+pattern = "(?x)^v(?P<base>\\d+\\.\\d+)"
 
 [tool.ruff]
 line-length = 100
@@ -60,8 +63,8 @@ select = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = ["B011"]
-"stmtool/cli.py" = ["B008"]
-"stmtool/i18n.py" = ["RUF001"]
+"src/stmtool/cli.py" = ["B008"]
+"src/stmtool/i18n.py" = ["RUF001"]
 
 [tool.black]
 line-length = 100
@@ -108,7 +111,7 @@ addopts = "--strict-markers"
 
 [tool.coverage.run]
 source = ["stmtool"]
-omit = ["stmtool/__init__.py"]
+omit = ["*/stmtool/__init__.py"]
 
 [tool.coverage.report]
 exclude_lines = [
@@ -119,20 +122,20 @@ exclude_lines = [
 
 [tool.poe.tasks]
 # Linters
-lint-ruff = "ruff check stmtool tests"
-lint-flake8 = "flake8 stmtool tests"
-lint-pylint = "pylint stmtool"
+lint-ruff = "ruff check src tests"
+lint-flake8 = "flake8 src tests"
+lint-pylint = "pylint src/stmtool"
 
 # Format checks
-fmt-check-ruff = "ruff format --check stmtool tests"
-fmt-check-black = "black --check stmtool tests"
-fmt-check-isort = "isort --check-only stmtool tests"
+fmt-check-ruff = "ruff format --check src tests"
+fmt-check-black = "black --check src tests"
+fmt-check-isort = "isort --check-only src tests"
 
 # Types
-type-mypy = "mypy stmtool tests"
+type-mypy = "mypy src tests"
 
 # Security
-sec-bandit = "bandit -ll -r stmtool"
+sec-bandit = "bandit -ll -r src/stmtool"
 
 # Tests
 test = "pytest tests --cov=stmtool --cov-fail-under=70"
@@ -143,8 +146,8 @@ fmt-check = ["fmt-check-ruff", "fmt-check-black", "fmt-check-isort"]
 ci = ["lint", "fmt-check", "type-mypy", "sec-bandit", "test"]
 
 # Auto-fixers
-fix-ruff = "ruff check --fix stmtool tests"
-fix-isort = "isort stmtool tests"
-fix-black = "black stmtool tests"
-fix-ruff-format = "ruff format stmtool tests"
+fix-ruff = "ruff check --fix src tests"
+fix-isort = "isort src tests"
+fix-black = "black src tests"
+fix-ruff-format = "ruff format src tests"
 fix = ["fix-ruff", "fix-isort", "fix-black", "fix-ruff-format"]

@@ -17,6 +17,17 @@ else:
 _CHIP_RE = re.compile(r"^STM32[A-Z]\d{3}[A-Z]{2}$")
 _DEFAULT_REPO = "https://github.com/khosta77/stm32-sdk.git"
 
+
+def _sdk_repo() -> str:
+    """Return the SDK git URL to clone, overridable via ``STMTOOL_SDK_REPO``.
+
+    stmtool ships without any SDK content; the SDK it manages lives in a
+    separate repository (default: the upstream stm32-sdk). Mirrors
+    ``_docker_image()`` so a fork or a local mirror can be pointed at.
+    """
+    return os.environ.get("STMTOOL_SDK_REPO", _DEFAULT_REPO)
+
+
 _GITIGNORE = """\
 build/
 *.o
@@ -43,7 +54,7 @@ def _clone_sdk_cache() -> Path:
     print(t("sdk_cloning"), file=sys.stderr)
     _SDK_CACHE_DIR.parent.mkdir(parents=True, exist_ok=True)
     result = subprocess.run(
-        ["git", "clone", _DEFAULT_REPO, str(_SDK_CACHE_DIR)],
+        ["git", "clone", _sdk_repo(), str(_SDK_CACHE_DIR)],
         capture_output=True,
         text=True,
         check=False,

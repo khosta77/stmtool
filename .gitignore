@@ -1,2 +1,24 @@
-stmtool/_version.py
-stmtool.egg-info/
+# Byte-compiled / caches
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+
+# Build / dist
+build/
+dist/
+
+# Test / coverage / type-check caches
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtualenvs
+.venv/
+venv/
+
+# OS
+.DS_Store
