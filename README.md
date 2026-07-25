@@ -57,7 +57,7 @@ stmtool flash
 | `stmtool sdk path` | Print the resolved SDK root path |
 | `stmtool doctor` | Check the development environment |
 | `stmtool completion <shell>` | Print a shell-completion script (`bash`/`zsh`/`fish`) |
-| `stmtool version` | Print the `stmtool` version |
+| `stmtool show-version` | Print the `stmtool` version |
 
 ## Environment variables
 
