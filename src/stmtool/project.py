@@ -18,6 +18,11 @@ _CHIP_RE = re.compile(r"^STM32[A-Z]\d{3}[A-Z]{2}$")
 _DEFAULT_REPO = "https://github.com/khosta77/stm32-sdk.git"
 
 
+def chip_family(chip: str) -> str:
+    """Return the SDK family id for a chip name (STM32F407VG -> stm32f4)."""
+    return f"stm32{chip[5:7].lower()}"
+
+
 def _sdk_repo() -> str:
     """Return the SDK git URL to clone, overridable via ``STMTOOL_SDK_REPO``.
 
@@ -30,6 +35,7 @@ def _sdk_repo() -> str:
 
 _GITIGNORE = """\
 build/
+out/
 *.o
 *.d
 *.elf
@@ -186,6 +192,19 @@ def create_project(
     if not _CHIP_RE.match(chip):
         raise ValueError(t("invalid_chip", chip=chip))
 
+    with open(tpl_dir / "template.toml", "rb") as f:
+        meta = tomllib.load(f)
+    families = meta.get("template", {}).get("families", [])
+    if families and chip_family(chip) not in families:
+        raise ValueError(
+            t(
+                "template_family_mismatch",
+                template=template_name,
+                chip=chip,
+                families=", ".join(families),
+            )
+        )
+
     target = Path.cwd() / name
     if target.exists():
         raise FileExistsError(t("project_exists", name=name))
@@ -197,6 +216,11 @@ def create_project(
         if item.name == "template.toml":
             continue
         if item.name == "CLAUDE.md.template" and not with_claude:
+            continue
+        # The template defconfig becomes the project's .config (Kconfig is
+        # the single source of truth for firmware content since SDK v0.2.2).
+        if item.name == "defconfig":
+            (target / ".config").write_text(item.read_text())
             continue
 
         if item.suffix == ".template":

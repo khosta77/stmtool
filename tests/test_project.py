@@ -141,3 +141,47 @@ def test_create_project_with_claude_emits_file(
     claude = out / "CLAUDE.md"
     assert claude.exists()
     assert "demo for STM32F407VG" in claude.read_text()
+
+
+def test_create_project_writes_dotconfig_from_defconfig(
+    tmp_template_dir: Path,
+    stmsdk_env: Path,
+    project_workdir: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _silence_git(monkeypatch)
+    (tmp_template_dir / "defconfig").write_text("CONFIG_STM32_USE_DRIVERS=y\n")
+    out = create_project("demo", "STM32F407VG", "blink")
+    dotconfig = out / ".config"
+    assert dotconfig.read_text() == "CONFIG_STM32_USE_DRIVERS=y\n"
+    assert not (out / "defconfig").exists()
+
+
+def test_create_project_rejects_family_mismatch(
+    tmp_template_dir: Path,
+    stmsdk_env: Path,
+    project_workdir: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _silence_git(monkeypatch)
+    (tmp_template_dir / "template.toml").write_text(
+        '[template]\nname = "blink"\ndescription = "d"\n'
+        'category = "bare-metal"\nfamilies = ["stm32f4"]\n'
+    )
+    with pytest.raises(ValueError, match="STM32G070RB"):
+        create_project("demo", "STM32G070RB", "blink")
+
+
+def test_create_project_accepts_matching_family(
+    tmp_template_dir: Path,
+    stmsdk_env: Path,
+    project_workdir: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _silence_git(monkeypatch)
+    (tmp_template_dir / "template.toml").write_text(
+        '[template]\nname = "blink"\ndescription = "d"\n'
+        'category = "bare-metal"\nfamilies = ["stm32f4"]\n'
+    )
+    out = create_project("demo", "STM32F407VG", "blink")
+    assert out.is_dir()
