@@ -33,6 +33,18 @@ _STRINGS: dict[str, dict[str, str]] = {
         "en": "Override chip from stmproject.toml",
         "ru": "Переопределить чип из stmproject.toml",
     },
+    "config_help": {
+        "en": "Open the Kconfig menuconfig TUI for the project .config",
+        "ru": "Открыть Kconfig menuconfig TUI для .config проекта",
+    },
+    "config_failed": {
+        "en": "menuconfig exited with an error",
+        "ru": "menuconfig завершился с ошибкой",
+    },
+    "template_family_mismatch": {
+        "en": "Template '{template}' does not support chip {chip} (families: {families})",
+        "ru": "Шаблон '{template}' не поддерживает чип {chip} (семейства: {families})",
+    },
     "test_help": {
         "en": "Build and run the SDK host unit tests in Docker",
         "ru": "Собрать и запустить host-юнит-тесты SDK в Docker",

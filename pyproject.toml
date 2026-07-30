@@ -12,6 +12,7 @@ python = "^3.10"
 typer = { extras = ["all"], version = ">=0.9" }
 rich = ">=13.0"
 tomli = { version = ">=2.0", python = "<3.11" }
+kconfiglib = ">=14.1.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=8"

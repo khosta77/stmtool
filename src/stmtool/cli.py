@@ -15,6 +15,7 @@ from stmtool import sdk as sdk_module
 from stmtool.completions import complete_chip, complete_flash_tool, complete_template
 from stmtool.config import load_config
 from stmtool.i18n import t
+from stmtool.kconfig import run_menuconfig
 from stmtool.project import create_project, list_templates, resolve_sdk_root
 
 app = typer.Typer(name="stmtool", help=t("app_help"), no_args_is_help=True)
@@ -168,6 +169,34 @@ def build(
     result = _build_docker(target_chip, sdk_root, build_type, verbose_flag)
 
     raise typer.Exit(code=result.returncode)
+
+
+@app.command(name="config", help=t("config_help"))
+def config_cmd(
+    chip: str = typer.Option(None, "--chip", help=t("build_chip"), autocompletion=complete_chip),
+) -> None:
+    """Open the interactive Kconfig menuconfig TUI for the project ``.config``."""
+    config: dict[str, object] = {}
+    config_path = Path("stmproject.toml")
+    if config_path.exists():
+        config = load_config(config_path)
+
+    sdk_section = config.get("sdk")
+    sdk_version = (
+        sdk_section.get("version", "develop") if isinstance(sdk_section, dict) else "develop"
+    )
+
+    try:
+        sdk_root = resolve_sdk_root(version=sdk_version)
+    except RuntimeError as e:
+        console.print(f"[red]{e}[/red]")
+        raise typer.Exit(code=1) from e
+
+    target_chip = _resolve_target_chip(chip, config)
+    rc = run_menuconfig(sdk_root, target_chip, Path.cwd())
+    if rc != 0:
+        console.print(f"[red]{t('config_failed')}[/red]")
+    raise typer.Exit(code=rc)
 
 
 @app.command(name="test", help=t("test_help"))
