@@ -54,3 +54,12 @@ def test_run_menuconfig_prepares_env_and_fragment(
     fragment = Path(captured["env"]["STM32_KCONFIG_CHIP_FRAGMENT"])
     assert fragment.is_file()
     assert "STM32_FAMILY_STM32F4" in fragment.read_text()
+
+
+def test_run_menuconfig_rejects_sdk_without_tree(tmp_path: Path) -> None:
+    sdk_root = tmp_path / "old-sdk"
+    (sdk_root / "sdk").mkdir(parents=True)
+    project = tmp_path / "proj"
+    project.mkdir()
+    with pytest.raises(RuntimeError, match=r"v0\.2\.2"):
+        run_menuconfig(sdk_root, "STM32F407VG", project)

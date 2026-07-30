@@ -193,7 +193,11 @@ def config_cmd(
         raise typer.Exit(code=1) from e
 
     target_chip = _resolve_target_chip(chip, config)
-    rc = run_menuconfig(sdk_root, target_chip, Path.cwd())
+    try:
+        rc = run_menuconfig(sdk_root, target_chip, Path.cwd())
+    except RuntimeError as e:
+        console.print(f"[red]{e}[/red]")
+        raise typer.Exit(code=1) from e
     if rc != 0:
         console.print(f"[red]{t('config_failed')}[/red]")
     raise typer.Exit(code=rc)
