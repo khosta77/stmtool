@@ -185,3 +185,17 @@ def test_create_project_accepts_matching_family(
     )
     out = create_project("demo", "STM32F407VG", "blink")
     assert out.is_dir()
+
+
+def test_create_project_wildcard_family_accepts_any_chip(
+    tmp_template_dir: Path,
+    stmsdk_env: Path,
+    project_workdir: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _silence_git(monkeypatch)
+    (tmp_template_dir / "template.toml").write_text(
+        '[template]\nname = "blink"\ndescription = "d"\ncategory = "bare-metal"\nfamilies = ["*"]\n'
+    )
+    out = create_project("demo", "STM32G070RB", "blink")
+    assert out.is_dir()

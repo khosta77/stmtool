@@ -195,7 +195,7 @@ def create_project(
     with open(tpl_dir / "template.toml", "rb") as f:
         meta = tomllib.load(f)
     families = meta.get("template", {}).get("families", [])
-    if families and chip_family(chip) not in families:
+    if families and "*" not in families and chip_family(chip) not in families:
         raise ValueError(
             t(
                 "template_family_mismatch",
