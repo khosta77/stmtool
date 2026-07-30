@@ -12,6 +12,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from stmtool.i18n import t
+
 
 def chip_kconfig_fragment(chip: str) -> str:
     """Render the generated Kconfig fragment for ``chip`` (e.g. STM32F407VG).
@@ -39,6 +41,8 @@ def run_menuconfig(sdk_root: Path, chip: str, project_dir: Path) -> int:
     as the migration path for pre-v0.2.2 projects.
     """
     kconfig_root = sdk_root / "sdk" / "Kconfig"
+    if not kconfig_root.is_file():
+        raise RuntimeError(t("kconfig_tree_missing", sdk=str(sdk_root)))
     gen_dir = project_dir / "out" / "generated"
     gen_dir.mkdir(parents=True, exist_ok=True)
     fragment = gen_dir / "Kconfig.chip"

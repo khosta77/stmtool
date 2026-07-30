@@ -41,6 +41,10 @@ _STRINGS: dict[str, dict[str, str]] = {
         "en": "menuconfig exited with an error",
         "ru": "menuconfig завершился с ошибкой",
     },
+    "kconfig_tree_missing": {
+        "en": "SDK at {sdk} ships no Kconfig tree (sdk/Kconfig); need SDK >= v0.2.2",
+        "ru": "SDK в {sdk} не содержит Kconfig-дерева (sdk/Kconfig); нужен SDK >= v0.2.2",
+    },
     "template_family_mismatch": {
         "en": "Template '{template}' does not support chip {chip} (families: {families})",
         "ru": "Шаблон '{template}' не поддерживает чип {chip} (семейства: {families})",
